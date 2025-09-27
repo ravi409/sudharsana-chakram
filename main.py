@@ -164,7 +164,7 @@ async def process_rows(page):
         print(f"[ERROR] Processing rows failed: {e}", flush=True)
 
 
-async def main_loop(page, duration_seconds=3600, interval_seconds=30):
+async def main_loop(page, duration_seconds=180, interval_seconds=30):
     """Run main loop to repeatedly apply filters and process rows."""
     start_time = time.time()
     while time.time() - start_time < duration_seconds:
