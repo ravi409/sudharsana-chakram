@@ -25,15 +25,15 @@ allowed_classifications = [cls.strip() for cls in ALLOWED_CLS.split(",") if cls.
 # ----------------------
 def send_notification(message: str):
     if not BOT_TOKEN or not CHAT_ID:
-        print("[WARN] Telegram credentials missing.")
+        print("[WARN] Telegram credentials missing.", flush=True)
         return
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
         resp = requests.post(url, json={"chat_id": CHAT_ID, "text": message})
         if resp.status_code != 200:
-            print(f"[ERROR] Telegram API failed: {resp.text}")
+            print(f"[ERROR] Telegram API failed: {resp.text}", flush=True)
     except Exception as e:
-        print(f"[ERROR] Failed to send notification: {e}")
+        print(f"[ERROR] Failed to send notification: {e}", flush=True)
 
 
 def format_notification(row):
@@ -64,7 +64,7 @@ def format_notification(row):
 
 async def safe_click(locator, force=False, scroll=True, retries=5):
     """Attempts to click a locator safely with retries and scrolling."""
-    for attempt in range(retries):
+    for _ in range(retries):
         try:
             if scroll:
                 await locator.scroll_into_view_if_needed()
@@ -95,9 +95,9 @@ async def expand_date_filter(page):
         # Collapse date section
         await safe_click(toggle_date, force=True)
         await asyncio.sleep(0.5)
-        print("[INFO] Date filter set successfully")
+        print("[INFO] Date filter set successfully", flush=True)
     except Exception as e:
-        print(f"[WARN] Could not set date range filter: {e}")
+        print(f"[WARN] Could not set date range filter: {e}", flush=True)
 
 
 async def set_location_filter(page):
@@ -120,9 +120,9 @@ async def set_location_filter(page):
             await asyncio.sleep(0.2)
 
         await safe_click(elementary_checkbox, force=True)
-        print("[INFO] ✅ Selected ELEMENTARY checkbox")
+        print("[INFO] ✅ Selected ELEMENTARY checkbox", flush=True)
     except Exception as e:
-        print(f"[WARN] Could not set location filters: {e}")
+        print(f"[WARN] Could not set location filters: {e}", flush=True)
 
 
 async def process_rows(page):
@@ -145,12 +145,12 @@ async def process_rows(page):
                 }
                 row_data_list.append(row_obj)
             except Exception as e:
-                print(f"[ERROR] Failed to process row: {e}")
+                print(f"[ERROR] Failed to process row: {e}", flush=True)
 
-        print(f"[INFO] Found {len(row_data_list)} rows")
+        print(f"[INFO] Found {len(row_data_list)} rows", flush=True)
         for row in row_data_list:
             message, _, diff_hours = format_notification(row)
-            print(message)
+            print(message, flush=True)
             location_upper = row["location"].upper().strip()
             classification = row["classification"].upper().strip()
 
@@ -161,7 +161,7 @@ async def process_rows(page):
             
             send_notification(message)
     except Exception as e:
-        print(f"[ERROR] Processing rows failed: {e}")
+        print(f"[ERROR] Processing rows failed: {e}", flush=True)
 
 
 async def main_loop(page, duration_seconds=3600, interval_seconds=30):
@@ -176,8 +176,8 @@ async def main_loop(page, duration_seconds=3600, interval_seconds=30):
 # Main Entry
 # ----------------------
 async def main():
-    print("Allowed classifications:", allowed_classifications)
-    print("Allowed locations:", allowed_locations)
+    print("Allowed classifications:", allowed_classifications, flush=True)
+    print("Allowed locations:", allowed_locations, flush=True)
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
