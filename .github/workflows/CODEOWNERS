@@ -1,0 +1,14 @@
+# Default owners for the entire repository
+*       @ravi409
+
+# Owner for all Python files
+*.py    @ravi409
+
+# Owner for workflow files
+.github/workflows/*    @ravi409
+
+# Owner for docs folder
+docs/*    @ravi409
+
+# Owner for specific files
+README.md    @ravi409
