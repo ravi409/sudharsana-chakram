@@ -16,37 +16,58 @@ jobs:
       ALLOWED_CLS: ${{ secrets.ALLOWED_CLS }}
 
     steps:
+      # 1. Checkout repository
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # 2. Setup Python with pip caching
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
           cache: "pip"
 
+      # 3. Cache pip packages
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # 4. Install Python dependencies
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 5. Cache Playwright browsers
       - name: Cache Playwright browsers
+        id: cache-playwright
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          playwright install --with-deps
+      # 6. Install Playwright browsers only if cache missed
+      - name: Install Playwright browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: playwright install --with-deps
 
+      # 7. Run Playwright script
       - name: Run Playwright script
         continue-on-error: true
         run: python -u main.py
 
+      # 8. Trigger new workflow run using PAT_TOKEN
       - name: Trigger new workflow run
+        if: always()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           curl -X POST \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+            -H "Authorization: token $PAT_TOKEN" \
             https://api.github.com/repos/ravi409/sudharsana-chakram/actions/workflows/playwright.yml/dispatches \
             -d '{"ref":"main"}'
-
