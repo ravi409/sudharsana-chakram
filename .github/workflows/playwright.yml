@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-          cache: "pip"   # built-in pip cache (faster than manual sometimes)
+          cache: "pip"
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -29,4 +29,15 @@ jobs:
           playwright install --with-deps
 
       - name: Run Playwright script
+        continue-on-error: true
         run: python main.py
+
+      - name: Trigger new workflow run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow }} \
+            -d '{"ref":"${{ github.ref }}"}'
