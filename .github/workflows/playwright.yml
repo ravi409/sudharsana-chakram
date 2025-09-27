@@ -6,6 +6,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      APP_URL: ${{ secrets.APP_URL }}
+      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      CHAT_ID: ${{ secrets.CHAT_ID }}
+      USER_ID: ${{ secrets.USER_ID }}
+      USER_PIN: ${{ secrets.USER_PIN }}
+      ALLOWED_LOCS: ${{ secrets.ALLOWED_LOCS }}
+      ALLOWED_CLS: ${{ secrets.ALLOWED_CLS }}
 
     steps:
       - name: Checkout repo
