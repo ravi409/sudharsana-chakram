@@ -22,4 +22,4 @@ jobs:
           playwright install --with-deps
 
       - name: Run Playwright script
-        run: python test_example.py
+        run: python main.py
