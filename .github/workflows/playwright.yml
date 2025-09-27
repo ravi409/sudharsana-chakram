@@ -1,7 +1,7 @@
 name: Playwright Test
 
 on:
-  workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   test:
@@ -15,10 +15,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+          cache: "pip"   # built-in pip cache (faster than manual sometimes)
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright
 
       - name: Install dependencies
         run: |
-          pip install playwright
+          pip install -r requirements.txt
           playwright install --with-deps
 
       - name: Run Playwright script
