@@ -38,7 +38,7 @@ jobs:
 
       - name: Run Playwright script
         continue-on-error: true
-        run: python main.py
+        run: python -u main.py
 
       - name: Trigger new workflow run
         env:
