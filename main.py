@@ -159,7 +159,7 @@ async def process_rows(page):
                diff_hours > 6:
                 send_notification(message)
             
-            send_notification(message)
+            # send_notification(message)
     except Exception as e:
         print(f"[ERROR] Processing rows failed: {e}", flush=True)
 
