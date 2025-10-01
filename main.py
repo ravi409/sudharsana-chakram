@@ -195,7 +195,7 @@ async def main():
 
         # Set filters
         await expand_date_filter(page)
-        await set_location_filter(page)
+        # await set_location_filter(page)
 
         # Run main loop
         await main_loop(page)
