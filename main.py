@@ -130,10 +130,11 @@ async def process_rows(page):
     try:
         await page.wait_for_selector("#apply-filter")
         await page.click("#apply-filter")
-        await page.wait_for_timeout(2000)
+        await page.wait_for_timeout(3000)
 
         # rows = await page.query_selector_all("tr[id^='desktop-row-']")
-        await page.wait_for_selector("tr[id^='desktop-row-']", timeout=2000)  # Wait up to 10 seconds
+        # await page.wait_for_selector("tr[id^='desktop-row-']", timeout=2000)  # Wait up to 10 seconds
+        # await page.wait_for_timeout(5000) 
         rows = await page.query_selector_all("tr[id^='desktop-row-']")
         row_data_list = []
 
