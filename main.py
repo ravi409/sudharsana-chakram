@@ -209,7 +209,7 @@ async def main():
 
         # Set filters
         await expand_date_filter(page)
-        await set_location_filter(page)
+        # await set_location_filter(page)
         
         await page.wait_for_selector("#available-tab-link")
         await page.click("#available-tab-link")
