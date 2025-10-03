@@ -107,20 +107,17 @@ async def set_location_filter(page):
         await safe_click(toggle_location, force=True)
         await asyncio.sleep(1)
 
+        location_search_input = page.locator("#location-name-input")
+        await location_search_input.wait_for(state="visible", timeout=10000)
+        await location_search_input.fill("ELEMENTARY")
+        await asyncio.sleep(1) 
+
         # Find the first checkbox with label ELEMENTARY
         elementary_label = page.locator("ul >> li >> label", has_text="ELEMENTARY").first
-        elementary_checkbox = elementary_label.locator("input[type=checkbox]")
+        await elementary_label.wait_for(state="visible", timeout=10000)
 
-        # Scroll container until visible
-        container = page.locator("section:has(button[name='Toggle Location Filter']) ul")
-        for _ in range(5):
-            if await elementary_checkbox.is_visible():
-                break
-            await container.evaluate("el => el.scrollBy(0, 200)")
-            await asyncio.sleep(0.2)
-
-        await safe_click(elementary_checkbox, force=True)
-        print("[INFO] ✅ Selected ELEMENTARY checkbox", flush=True)
+        await safe_click(elementary_label, force=True)
+        print("[INFO] ✅ Clicked ELEMENTARY label", flush=True)
     except Exception as e:
         print(f"[WARN] Could not set location filters: {e}", flush=True)
 
@@ -209,7 +206,7 @@ async def main():
 
         # Set filters
         await expand_date_filter(page)
-        # await set_location_filter(page)
+        await set_location_filter(page)
         
         await page.wait_for_selector("#available-tab-link")
         await page.click("#available-tab-link")
