@@ -128,11 +128,19 @@ async def set_location_filter(page):
 async def process_rows(page):
     """Extract rows and send notifications based on allowed locations/classifications."""
     try:
-        await page.wait_for_selector("#available-tab-link")
-        await page.click("#available-tab-link")
+        # await page.wait_for_selector("#available-tab-link")
+        # await page.click("#available-tab-link")
         await page.wait_for_selector("#apply-filter")
         await page.click("#apply-filter")
         await page.wait_for_timeout(3000)
+        
+        try:
+            loader = page.locator("pds-loader")
+            if await loader.count() > 0:
+                await loader.wait_for(state="detached", timeout=10000)
+                
+        except Exception as e:
+            print(f"{e}", flush=True)
 
         # rows = await page.query_selector_all("tr[id^='desktop-row-']")
         # await page.wait_for_selector("tr[id^='desktop-row-']", timeout=2000)  # Wait up to 10 seconds
@@ -197,12 +205,15 @@ async def main():
         await page.fill("#userPin", USER_PIN)
         await page.click("#submitBtn")
 
-        await page.wait_for_selector("#available-tab-link")
-        await page.click("#available-tab-link")
+        
 
         # Set filters
         await expand_date_filter(page)
-        # await set_location_filter(page)
+        await set_location_filter(page)
+        
+        await page.wait_for_selector("#available-tab-link")
+        await page.click("#available-tab-link")
+        await asyncio.sleep(30)
 
         # Run main loop
         await main_loop(page)
