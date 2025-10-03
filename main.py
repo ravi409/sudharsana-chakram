@@ -128,6 +128,8 @@ async def set_location_filter(page):
 async def process_rows(page):
     """Extract rows and send notifications based on allowed locations/classifications."""
     try:
+        await page.wait_for_selector("#available-tab-link")
+        await page.click("#available-tab-link")
         await page.wait_for_selector("#apply-filter")
         await page.click("#apply-filter")
         await page.wait_for_timeout(3000)
