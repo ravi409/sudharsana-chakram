@@ -180,8 +180,10 @@ async def main():
     print("Allowed locations:", allowed_locations, flush=True)
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context()
+        # browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(headless=True, args=["--window-size=1920,1080"])
+        context = await browser.new_context(viewport={"width": 1920, "height": 1080})
+        # context = await browser.new_context()
         page = await context.new_page()
 
         # Login
